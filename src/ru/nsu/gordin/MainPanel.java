@@ -101,7 +101,7 @@ public class MainPanel extends JPanel{
         }
 
         public void actionPerformed(ActionEvent e) {
-
+            JOptionPane.showMessageDialog(null, "Gordin Maxim, gormakc.ru@gmail.com");
         }
     }
 
@@ -115,7 +115,7 @@ public class MainPanel extends JPanel{
         }
 
         public void actionPerformed(ActionEvent e) {
-
+            System.exit(0);
         }
     }
 
