@@ -1,5 +1,7 @@
 package ru.nsu.gordin;
 
+import javafx.embed.swing.JFXPanel;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -13,13 +15,13 @@ public class MainPanel extends JPanel{
         super(new BorderLayout());
 
         aboutAction = new AboutAction("About",
-                                    createToolIcon("info_icon&16"),
-                                    "About lab1",
-                                    new Integer(KeyEvent.VK_H));
+                createToolIcon("info_icon&16"),
+                "About lab1",
+                new Integer(KeyEvent.VK_H));
         exitAction = new ExitAction("Exit",
-                                    createToolIcon("on-off_icon&16"),
-                                    "Quit the application",
-                                    new Integer(KeyEvent.VK_E));
+                createToolIcon("on-off_icon&16"),
+                "Quit the application",
+                new Integer(KeyEvent.VK_E));
     }
 
     protected static ImageIcon createToolIcon(String imageName) {
@@ -77,6 +79,7 @@ public class MainPanel extends JPanel{
 
         JToolBar toolBar = new JToolBar();
         add(toolBar, BorderLayout.PAGE_START);
+        toolBar.setFloatable(false);
 
         button = new JButton(aboutAction);
         if (button.getIcon() != null) {
@@ -94,14 +97,14 @@ public class MainPanel extends JPanel{
     public class AboutAction extends AbstractAction {
 
         public AboutAction(String text, ImageIcon icon,
-                          String desc, Integer mnemonic) {
+                           String desc, Integer mnemonic) {
             super(text, icon);
             putValue(SHORT_DESCRIPTION, desc);
             putValue(MNEMONIC_KEY, mnemonic);
         }
 
         public void actionPerformed(ActionEvent e) {
-            JOptionPane.showMessageDialog(null, "Gordin Maxim, gormakc.ru@gmail.com");
+            JOptionPane.showMessageDialog(getRootPane(),"Gordin Maxim, gormakc.ru@gmail.com");
         }
     }
 
@@ -129,8 +132,8 @@ public class MainPanel extends JPanel{
         demo.add(new DrawPanel());
         demo.setOpaque(true);
         frame.setContentPane(demo);
-        frame.setSize(800, 600);
-        frame.setResizable(false);
+        frame.setMinimumSize(new Dimension(800, 600));
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 
