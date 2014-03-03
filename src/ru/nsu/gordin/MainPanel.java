@@ -129,7 +129,8 @@ public class MainPanel extends JPanel{
         MainPanel demo = new MainPanel();
         frame.setJMenuBar(demo.createMenuBar());
         demo.createToolBar();
-        demo.add(new DrawPanel());
+        DrawPanel drawPanel = new DrawPanel();
+        demo.add(drawPanel);
         demo.setOpaque(true);
         frame.setContentPane(demo);
         frame.setMinimumSize(new Dimension(800, 600));
