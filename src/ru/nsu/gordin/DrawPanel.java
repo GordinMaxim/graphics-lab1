@@ -4,6 +4,8 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 
 public class DrawPanel extends JPanel {
@@ -27,26 +29,60 @@ public class DrawPanel extends JPanel {
         slider.setMinorTickSpacing(2);
         slider.setPaintTicks(true);
         slider.setPaintLabels(true);
-        add(slider, BorderLayout.NORTH);
+        JPanel settingPanel = new JPanel(new BorderLayout());
+        settingPanel.add(slider, BorderLayout.CENTER);
+
+        JButton button = new JButton("Hide");
+        button.setPreferredSize(new Dimension(100, 25));
+        button.addActionListener(canvasPanel);
+        settingPanel.add(button, BorderLayout.EAST);
+        add(settingPanel, BorderLayout.NORTH);
     }
 
-    protected class CanvasPanel extends JPanel implements ChangeListener {
+    protected class CanvasPanel extends JPanel implements ChangeListener, ActionListener {
+
+        private boolean show = true;
 
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
+
+            if(show) {
+                drawCircle(g);
+            }
+        }
+
+        public void drawCircle(Graphics g) {
             Graphics2D g2 = (Graphics2D) g;
-            int height = getSize().height;
-            int width = getSize().width;
+            int height = getHeight();
+            int width = getWidth();
             BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
 
             int x0 = width/2, y0 = height/2;
-            int x, y;
-            for(double angle = 0; angle < 2 * Math.PI; angle += Math.toRadians(0.1))
-            {
-                x = (int)(radius * Math.cos(angle)) + x0;
-                y = (int)(radius * Math.sin(angle)) + y0;
-                image.setRGB(x, y, Color.WHITE.getRGB());
+            int x = 0, y = radius;
+            int delta = 1 - 2 * radius;
+            int error = 0;
+            while(0 <= y) {
+                image.setRGB(x0 + x, y0 + y, Color.WHITE.getRGB());
+                image.setRGB(x0 - x, y0 + y, Color.WHITE.getRGB());
+                image.setRGB(x0 + x, y0 - y, Color.WHITE.getRGB());
+                image.setRGB(x0 - x, y0 - y, Color.WHITE.getRGB());
+                error = 2 * (delta + y) - 1;
+                if(delta < 0 && error <= 0) {
+                    x++;
+                    delta += 2 * x + 1;
+                    continue;
+                }
+                error = 2 * (delta - x) - 1;
+                if(delta > 0 && error > 0) {
+                    y--;
+                    delta += 1 - 2 * y;
+                    continue;
+                }
+                x++;
+                delta += 2 * (x - y);
+                y--;
             }
+            
             g2.drawImage(image, 0, 0, null);
         }
 
@@ -54,6 +90,19 @@ public class DrawPanel extends JPanel {
         public void stateChanged(ChangeEvent e) {
             JSlider slider = (JSlider) e.getSource();
             radius = slider.getValue();
+            repaint();
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JButton button = (JButton) e.getSource();
+            if(show) {
+                button.setText("Show");
+            }
+            else {
+                button.setText("Hide");
+            }
+            show = !show;
             repaint();
         }
     }
